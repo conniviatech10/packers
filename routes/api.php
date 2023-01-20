@@ -21,6 +21,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('v1')->namespace('App\Http\Controllers\Api')->group(function(){
 
     Route::post('/login', 'Auth\LoginController@login')->name('api.login');
+    Route::post('/otp/generate', 'Auth\LoginController@generate_otp')->name('api.otp.generate');
+    Route::post('/otp/validate', 'Auth\LoginController@validate_otp')->name('api.otp.validate');
     Route::post('/otp_login', 'Auth\LoginController@login')->name('api.otp_login');
     Route::post('/register', 'Auth\RegisterController@register')->name('api.register');
     Route::post('/password/reset', 'Auth\ResetPasswordController@reset')->name('api.password.reset');

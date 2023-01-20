@@ -52,7 +52,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            // 'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
 
@@ -67,7 +67,7 @@ class RegisterController extends Controller
         return User::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            // 'password' => Hash::make($data['password']),
         ]);
     }
     public function register(){
@@ -77,7 +77,7 @@ class RegisterController extends Controller
             'mobile' => ['required', 'numeric', 'min:10', 'unique:users'],
             'state' => ['required', 'string'],
             'city' => ['required', 'string'],
-            'password' => ['required', 'string', 'min:4','confirmed'],
+            // 'password' => ['required', 'string', 'min:4','confirmed'],
         ]);
         if ($validator->fails()){
             return response(['error'=>true,'message'=>$validator->errors()], 422);
@@ -87,14 +87,14 @@ class RegisterController extends Controller
             'name' => request()->name,
             'email' => request()->email,
             'mobile'=>request()->mobile,
-            'password' => Hash::make(request()->password),
+            // 'password' => Hash::make(request()->password),
         ]);
 
         
         if(!$user){
 
           
-            return response()->json(['error'=>true,'message'=>'Unknown Error!']);
+            return response()->json(['error'=>true,'message'=>'Unknown Error!'],422);
         }
         $user->assignRole('User');
         $user->business()->create([
@@ -106,7 +106,7 @@ class RegisterController extends Controller
         return response()->json([
             'success'=>true,
             'message'=>'User register successfully.'
-        ]);
+        ],200);
 
     }
 }
