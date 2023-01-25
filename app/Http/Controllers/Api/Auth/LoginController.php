@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
 
@@ -45,7 +46,8 @@ class LoginController extends Controller
     public function login(){
         $validator=validator(request()->all(),[
             'email' => 'required|string|max:255',
-            'password' => 'required|string|min:4',
+            // 'password' => 'required',
+            
         ]);
         if ($validator->fails()){
             return response(['error'=>true,'message'=>$validator->errors()], 422);
@@ -57,6 +59,7 @@ class LoginController extends Controller
             ]);
         }
         $user = \Auth::user(); 
+        // dd($user);
         $token = $user->createToken(config('app.name').' Password Grant Client')->accessToken;
         return response()->json([
             'success'=>true,
@@ -65,15 +68,30 @@ class LoginController extends Controller
     }
     protected function credentials(Request $request)
         {
-          if(is_numeric($request->get('email'))){
-            return ['mobile'=>$request->get('email'),'password'=>$request->get('password')];
-          }
-          elseif (filter_var($request->get('email'), FILTER_VALIDATE_EMAIL)) {
-            return ['email' => $request->get('email'), 'password'=>$request->get('password')];
-          }
-          return ['username' => $request->get('email'), 'password'=>$request->get('password')];
+
+                if(is_numeric($request->get('email'))){
+                  return ['mobile'=>$request->get('email'),'password'=>$request->get('password')??''];
+                }
+                elseif (filter_var($request->get('email'), FILTER_VALIDATE_EMAIL)) {
+                  return ['email' => $request->get('email'), 'password'=>$request->get('password')??''];
+                }
+                return ['username' => $request->get('email'), 'password'=>$request->get('password')??''];
+
         }
 
+        public function check_user(Request $request)
+
+        {
+            $user= User::where('mobile',$request->mobile)->first();
+            if(!$user)
+            {
+                return response()->json(['success'=>true,'message'=>'User available'],200);  
+
+               
+            }
+            return response()->json(['error'=>true,'message'=>'User not exist'],422);  
+               
+        }
     /**
     * User generate otp api
     *
@@ -89,26 +107,33 @@ class LoginController extends Controller
        $otp = random_int(100000, 999999);
     //    $time = DB::table('settings')->select('otpTime')->where('id',1)->first();
        $user_otp = DB::insert('insert into register_otp (mobile, otp, status,created_at) values (?, ?, ?, ?)', [$request->mobile, $otp,'Checking' ,carbon::now()]);
-    //    dd($user_otp);
-    //    $curl = curl_init();
-    //    curl_setopt_array($curl, array(
-    //      CURLOPT_URL => 'https://api.authkey.io/request?authkey=b7634c3d6d6a0079&mobile='.$request->mobile.'&country_code=91&sid=5910&otp='.$otp,
-    //      CURLOPT_RETURNTRANSFER => true,
-    //      CURLOPT_ENCODING => '',
-    //      CURLOPT_MAXREDIRS => 10,
-    //      CURLOPT_TIMEOUT => 0,
-    //      CURLOPT_FOLLOWLOCATION => true,
-    //      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-    //      CURLOPT_CUSTOMREQUEST => 'GET',
-    //    ));
-    //    $response = curl_exec($curl);
-    //    $err = curl_error($curl);
-    //    curl_close($curl);
-    //    if ($err) {
-    //      return response()->json(['error'=>true,'message'=>'Something went wrong'],422);
-    //    } else {
+    
+    
+
+
+    $xml_data = 'user=PACKERSW&key=335b3a52d6XX&mobile=+91'.$request->mobile.'&message=YOUR OTP FOR LOGIN '.$otp.' NSL&senderid=KRINCN&accusage=1&entityid=1201164562188563646&tempid=1207165710971535642';
+    
+       
+    $URL = "http://mobicomm.dove-sms.com//submitsms.jsp?"; 
+       
+                   $ch = curl_init($URL);
+                   curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+                   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+                   curl_setopt($ch, CURLOPT_POST, 1);
+                   curl_setopt($ch, CURLOPT_ENCODING, 'UTF-8');			
+                   curl_setopt($ch, CURLOPT_POSTFIELDS, "$xml_data");
+                   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                   $output = curl_exec($ch);
+                   $err = curl_error($ch);
+                   curl_close($ch);
+       
+       //print_r($output); 
+
+       if ($err) {
+         return response()->json(['error'=>true,'message'=>'Something went wrong'],422);
+       } else {
          return response()->json(['success'=>true,'mobile'=> $request->mobile,'otp'=>$otp],200);
-    //    }
+       }
     }
 /**
     * User validate otp api
@@ -139,6 +164,6 @@ class LoginController extends Controller
             //    }
         //    }
     //    }
-    //    return response()->json(['error'=>true,'message'=>'Otp validation failed'],422);
+       return response()->json(['error'=>true,'message'=>'Otp validation failed'],422);
      }
 }

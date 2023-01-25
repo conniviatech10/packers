@@ -18,6 +18,7 @@
         "laravelcollective/html": "^6.3",
         "mews/purifier": "^3.3",
         "php-imap/php-imap": "^2.0",
+        "razorpay/razorpay": "^2.8",
         "spatie/laravel-permission": "^5.5",
         "yajra/laravel-datatables-oracle": "^9.19"
     },

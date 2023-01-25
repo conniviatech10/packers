@@ -144,6 +144,7 @@ class OrderController extends Controller
             $order=Post::find($id);
             $order->saveMeta([
                 'assigned_to'=>$request->assignd_to,
+                // dd($request->assignd_to),
                
                
 

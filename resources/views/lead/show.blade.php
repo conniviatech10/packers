@@ -119,27 +119,7 @@
                         </table>
                     </div>
                 </div>
-                
-                        <!-- <div class="row">
-                            <form action="">
-                            <div class="col"> 
-                        <label for="qoutation_ammount">Quotation Ammount : </label>
-                        <input type="number" id="qoutation_ammount" name="qoutation_ammount" value="enter ammount">
-                       
-                            </div>
-
-                            <div class="col"> 
-                            <label for="advance_ammount">Advance Ammount : </label>
-                            <input type="number" id="advance_ammount" name="advance_ammount" value="enter ammount" >
-                           
-                            </div> 
-
-                            </form>
-
-                        </div> -->
-               
-
-                
+       
                
                 <div class="row">
                     <div class="col-6">
@@ -250,22 +230,8 @@
                                 <label for="inputnote">Note(Optional)</label>
                                 <textarea class="form-control" id="inputnote" name="note" placeholder="Note" rows="1"></textarea>
                               </div>
-                        </div>
-                        
+                        </div>    
                     </form>
-
-                      
-                    <!-- @php 
-      
-      @$qoutation_amount=$_GET['qoutation_amount'];   
-      @$advance_amount=$_GET['advance_amount'];  
-      for ($i=1; $i<=$advance_amount; $i++)     
-      {      
-       $qoutation_amount--;      
-      }      
-      echo "Difference=".$qoutation_amount;  
-      @endphp -->
-
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -340,16 +306,7 @@
                 }
             });
 
-            $(".control-label").onChange(function() {
-                var remaining_amount = 0;
-                $(".control-label").each(function(index, item) {
-                    temp = parseFloat($(item).val());
-                    if (isNaN(temp))
-                        temp = 0;
-                        remaining_amount = remaining_amount + temp;
-                });
-                $(".remaining_amount").val(remaining_amount);
-            });
+
             
         });
 

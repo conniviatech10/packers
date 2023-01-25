@@ -8,6 +8,7 @@ use App\Models\Item;
 use Corcel\Model\Post;
 use Illuminate\Http\Request;
 
+
 class OrderController extends Controller
 {
     /**
@@ -102,6 +103,7 @@ class OrderController extends Controller
         $order->post_status='Pending';
         $order->save();
 		$order->saveMeta($request->except(['category']));
+
         $order->saveMeta([
             'user_id'=>auth()->id()??0,
             /*'moving_type'=>$request->moving_type,
@@ -118,6 +120,11 @@ class OrderController extends Controller
             'user_agent'=>$request->userAgent(),
             'assigned'=>false,
             'assigned_to'=>0
+
+            // if($request->action=='update' && $request->type=='user'){
+            //     $order=Post::find($id);
+            //     $order->saveMeta([
+            //         'assigned_to'=>$request->assignd_to,
 
         ]);
         if($request->has('category') && count($request->category)>0){
@@ -230,6 +237,8 @@ class OrderController extends Controller
                 $user->role=$user->roles()->first()->name;
                 $user=collect($user)->except('roles');
             }
+            $assigned_to= \App\Models\User::find($order->assigned_to)??[];
+            $assigned_to->role=$assigned_to->roles()->first()->name;
             return [
                     'id'=>$items->ID,
                     'visit_type'=>$items->visit_type,
@@ -237,9 +246,11 @@ class OrderController extends Controller
                     'time'=>$items->time,
                     'note'=>$items->note,
                     'status'=> $order->post_status, //$items->post_status,
-                    'assigned_to'=>$user??[],
+                    // 'assigned_to'=>$user??[],
+                    'assigned_to'=>$assigned_to, //\App\Models\User::find($order->assigned_to)??[],
                     'qoutation_amount' => $items->qoutation_amount,
                     'advance_amount' => $items->advance_amount,
+                    // dd($order->assigned_to),
                 ];
         });
         if($appointment->isEmpty()){

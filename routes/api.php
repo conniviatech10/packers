@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Auth\Payment_logController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('v1')->namespace('App\Http\Controllers\Api')->group(function(){
 
     Route::post('/login', 'Auth\LoginController@login')->name('api.login');
+    Route::post('/check/user', 'Auth\LoginController@check_user')->name('api.check.user');
     Route::post('/otp/generate', 'Auth\LoginController@generate_otp')->name('api.otp.generate');
     Route::post('/otp/validate', 'Auth\LoginController@validate_otp')->name('api.otp.validate');
     Route::post('/otp_login', 'Auth\LoginController@login')->name('api.otp_login');
@@ -38,6 +40,9 @@ Route::prefix('v1')->namespace('App\Http\Controllers\Api')->group(function(){
         //media user profile upload
         //services
         Route::resource('service',ServiceController::class)->only(['store']);
+
+        // Route::get('razorpay', [Payment_logController::class])->name('razorpay');
+        Route::post('razorpaypayment', [Payment_logController::class,'payment'])->name('payment');
         
     });
 
