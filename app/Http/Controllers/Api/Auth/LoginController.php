@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 
 class LoginController extends Controller
@@ -43,55 +44,124 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    public function login(){
-        $validator=validator(request()->all(),[
-            'email' => 'required|string|max:255',
-            // 'password' => 'required',
+    // public function login(Request $request){
+    //     $validator=validator(request()->all(),[
+    //         // 'email' => 'required|string|max:255',
+    //         // 'password' => 'required',
             
-        ]);
-        if ($validator->fails()){
-            return response(['error'=>true,'message'=>$validator->errors()], 422);
+    //     ]);
+    //     if ($validator->fails()){
+    //         return response(['error'=>true,'message'=>$validator->errors()], 422);
+    //     }
+    //     if(\auth::User()->attempt(['mobile'],$request->mobile)){
+    //     // if(Auth::attempt('mobile' => $request->mobile)){
+    //         return response()->json([
+    //             'error'=>true,
+    //             'message'=>'Please check your email/mobile number or password!'
+    //         ]);
+    //     }
+    //     $user = \Auth::user(); 
+    //     // dd($user);
+    //     $token = $user->createToken(config('app.name').' Password Grant Client')->accessToken;
+    //     return response()->json([
+    //         'success'=>true,
+    //         'token'=>$token
+    //     ]);
+    // }
+    // protected function credentials(Request $request)
+    //     {
+
+    //             if(is_numeric($request->get('email'))){
+    //               return ['mobile'=>$request->get('email'), 'password'=>request()->password??'',];
+    //             }
+    //             elseif (filter_var($request->get('email'), FILTER_VALIDATE_EMAIL)) {
+    //               return ['email' => $request->get('email'), 'password'=>request()->password??'',];
+    //             }
+    //             return ['username' => $request->get('email'), 'password'=>request()->password??'',];
+
+    //     }
+
+    public $successStatus = 200;
+
+    public function login_otp(Request $request)
+    {
+        $user= User::where('mobile',$request->mobile)->first();
+
+        if($user){
+            Auth::login($user);
+            $success['token'] =  $user->createToken('MyApp')->accessToken;
+            return response()->json(['success' => $success], $this->successStatus);
+
         }
-        if(!auth()->attempt($this->credentials(request()))){
-            return response()->json([
-                'error'=>true,
-                'message'=>'Please check your email/mobile number or password!'
-            ]);
-        }
-        $user = \Auth::user(); 
-        // dd($user);
-        $token = $user->createToken(config('app.name').' Password Grant Client')->accessToken;
-        return response()->json([
-            'success'=>true,
-            'token'=>$token
-        ]);
+        return response()->json(['error' => 'Something went wrong',],422);
+       
+         
+
+        // return response()->json([
+        //     'success' => true,
+        //     'user'  => $user,
+            
+        // ]);
+
+       
+
     }
-    protected function credentials(Request $request)
+
+
+    // public function authenticate(Request $request)
+    // {
+    //     // $validator = Validator::make($request->all(), [
+    //     //     'password' => 'required'
+    //     // ]);
+    //     //Send failed response if request is not valid
+    //     // if ($validator->fails()) {
+    //     //     return response()->json(collect(['error'=>true,'message'=>'Please fill all details!'])->merge(collect($validator->messages())->map(function($items){ return $items[0]; })), 422);
+    //     // }
+    //     $User = User::select('id','name','store_owner_name','executive_name','store_id','mobile','image','password','gst_document','medical_registration_document','medical_registration','gst_number','pincode','otp','account_number','ifsc_code','account_name')->where('mobile',$request->mobile)->where('status','1')->first(); 
+    //     if(!$User){
+    //       return response()->json(['error' => 'Access Denied',],422);
+    //     }
+    //     //Request is validated
+    //     //Create token
+    //     // if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ old way with email
+    //     if(Hash::check($request->password, $User->password)){
+    //         // $user = Auth::user();
+    //         \Auth::login($User); 
+    //         $User->token =  $User->createToken('api')->plainTextToken;
+    //         $User->type  = $User->roles->first()->name;
+    //         $User->getPermissionsViaRoles()->pluck('names');
+    //         User::where('id',auth()->user()->id)->update(['last_login' => Carbon::now()]);
+    //     }
+    //     else{
+    //         return response()->json([
+    //             'error' => 'Credentials Wrong',
+    //         ],422);
+    //     }
+    //     // unset($User->roles);
+    //     unset($User->device);
+    //     //Token created, return with success response and jwt token
+    //     return response()->json([
+    //         'success' => true,
+    //         'user'  => $User,
+    //     ]);
+    // }
+        
+
+
+
+    public function check_user(Request $request)
+
+    {
+        $user= User::where('mobile',$request->mobile)->first();
+        if(!$user)
         {
+            return response()->json(['error'=>true,'message'=>'User not register'],422);  
 
-                if(is_numeric($request->get('email'))){
-                  return ['mobile'=>$request->get('email'),'password'=>$request->get('password')??''];
-                }
-                elseif (filter_var($request->get('email'), FILTER_VALIDATE_EMAIL)) {
-                  return ['email' => $request->get('email'), 'password'=>$request->get('password')??''];
-                }
-                return ['username' => $request->get('email'), 'password'=>$request->get('password')??''];
-
+           
         }
-
-        public function check_user(Request $request)
-
-        {
-            $user= User::where('mobile',$request->mobile)->first();
-            if(!$user)
-            {
-                return response()->json(['success'=>true,'message'=>'User available'],200);  
-
-               
-            }
-            return response()->json(['error'=>true,'message'=>'User not exist'],422);  
-               
-        }
+        return response()->json(['success'=>true,'message'=>'User already exist'],200);  
+           
+    }
     /**
     * User generate otp api
     *
