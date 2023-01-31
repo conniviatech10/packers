@@ -260,10 +260,14 @@ class UserController extends Controller
     public function update_password(){
         $this->validate(request(),[
             'password' => ['required', 'string', 'min:4', 'confirmed'],
+            // 'password_confirmation' => ['same:password'],
         ]);
+        
         $user=User::find(request()->id);
         $user->password=Hash::make(request()->password);
+        // $user->password= request()->password;
         $user->save();
+        // dd($user);
         if(!$user){
             return redirect()->back()->with('error', 'Unknown Error!');
         }

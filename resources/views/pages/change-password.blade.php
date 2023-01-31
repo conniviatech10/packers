@@ -4,9 +4,29 @@
     <!-- push external head elements to head -->
     @push('head')
         <link rel="stylesheet" href="{{ asset('plugins/select2/dist/css/select2.min.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"> 
+         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" /> 
+        <style>
+           .field-icon {
+  float: right;
+  margin-left: -18px;
+  margin-top: -25px;
+  position: relative;
+  z-index: 2;
+}
+.field-icon1 {
+  float: right;
+  margin-left: -10px;
+  margin-top: -25px;
+  position: relative;
+  z-index: 2;
+}
+
+        </style>
     @endpush
 
-    
+
+
     <div class="container-fluid">
     	<div class="page-header">
             <div class="row align-items-end">
@@ -53,23 +73,32 @@
 
                                     
                                    
-                                    <div class="form-group">
-                                        <label for="password">{{ __('Password')}}</label>
-                                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password"  >
-                                        <div class="help-block with-errors"></div>
-
+                                <div class="form-group">
+                                   <label class="col-md-4 control-label">{{ __('Password')}}</label>
+                                <div class="col-md-12">
+                                   <input id="password-field" type="password" class="form-control @error('password') is-invalid @enderror" name="password" value="" placeholder="Enter new password">
+                                      <span toggle="#password-field" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                                    
                                         @error('password')
                                             <span class="invalid-feedback" role="alert">
                                                 <strong>{{ $message }}</strong>
                                             </span>
                                         @enderror
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="password-confirm">{{ __('Confirm Password')}}</label>
-                                        <input id="password-confirm" type="password" class="form-control" name="password_confirmation">
-                                        <div class="help-block with-errors"></div>
-                                    </div>
-                                    
+                                </div>
+                             </div>
+                                 
+                             <div class="form-group">
+                                   <label class="col-md-4 control-label">{{ __('Confirm Password')}}</label>
+                                <div class="col-md-12">
+                                   <input id="password-field1" type="password" class="form-control @error('password') is-invalid @enderror" name="password_confirmation" value="" placeholder="Re-enter password" >
+                                      <span toggle="#password-field1" class="fa fa-fw fa-eye field-icon1 toggle-password1"></span>
+                                      @error('password')
+                                            <span class="invalid-feedback" role="alert">
+                                                <strong>{{ $message }}</strong>
+                                            </span>
+                                        @enderror
+                                </div>
+                             </div>
                                     
                                     
                                     
@@ -94,5 +123,74 @@
         <script src="{{ asset('plugins/select2/dist/js/select2.min.js') }}"></script>
         <!--get role wise permissiom ajax script-->
         <script src="{{ asset('js/get-role.js') }}"></script>
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> -->
+
+        <script> 
+ 
+
+// $("body").on('click', '.toggle-password', function() {
+//   $(this).toggleClass("fa-eye fa-eye-slash");
+//   var input = $("#password");
+// //   var input = $("#password-confirm");
+//   if (input.attr("type") === "password") {
+//     input.attr("type", "text");
+//   } else {
+//     input.attr("type", "password");
+//   }
+
+//   $(this).toggleClass("fa-eye fa-eye-slash");
+// //   var input = $("#password");
+//   var input = $("#password-confirm");
+//   if (input.attr("type") === "password") {
+//     input.attr("type", "text");
+//   } else {
+//     input.attr("type", "password");
+//   }
+  
+
+// });
+
+// const togglePassword = document.querySelector("#togglePassword");
+//         const password = document.querySelector("#password");
+
+//         togglePassword.addEventListener("click", function () {
+//             // toggle the type attribute
+//             const type = password.getAttribute("type") === "password" ? "text" : "password";
+//             password.setAttribute("type", type);
+            
+//             // toggle the icon
+//             this.classList.toggle("bi-eye");
+//         });
+
+//         // prevent form submit
+//         const form = document.querySelector("form");
+//         form.addEventListener('submit', function (e) {
+//             e.preventDefault();
+//         });
+
+$(".toggle-password").click(function() {
+
+$(this).toggleClass("fa-eye fa-eye-slash");
+var input = $($(this).attr("toggle"));
+if (input.attr("type") == "password") {
+  input.attr("type", "text");
+} else {
+  input.attr("type", "password");
+}
+});
+$(".toggle-password1").click(function() {
+
+$(this).toggleClass("fa-eye fa-eye-slash");
+var input = $($(this).attr("toggle"));
+if (input.attr("type") == "password") {
+  input.attr("type", "text");
+} else {
+  input.attr("type", "password");
+}
+});
+    </script>
+        
     @endpush
+
+   
 @endsection
