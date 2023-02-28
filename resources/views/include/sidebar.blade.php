@@ -39,6 +39,17 @@
 
                     </div>
                 </div>  
+
+                
+                <div class="nav-item {{ ($segment1 == 'payment') ? 'active open' : '' }} has-sub">
+                    <a href="#"><i class="ik ik-shopping-cart"></i><span>{{ __('Payment')}}</span></a>
+                    <div class="submenu-content">
+                        <a href="{{url('admin/payment')}}" class="menu-item {{ ($segment1 == 'payment') ? 'active' : '' }}">{{ __('Payment')}}</a>
+
+                    </div>
+                </div>  
+
+
                 <div class="nav-item {{ ($segment1 == 'quotation') ? 'active open' : '' }} has-sub">
                     <a href="#"><i class="ik ik-clipboard"></i><span>{{ __('Quotation')}}</span></a>
                     <div class="submenu-content">

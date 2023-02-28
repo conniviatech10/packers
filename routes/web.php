@@ -63,7 +63,11 @@ Route::prefix('admin')->middleware('auth')->group(function(){
 	Route::get('get-role-permissions-badge', [App\Http\Controllers\Admin\PermissionController::class,'getPermissionBadgeByRole']);
 
     // Order Request /Lead
-    Route::resource('/request', App\Http\Controllers\Admin\OrderController::class)->names('leads');    
+    Route::resource('/request', App\Http\Controllers\Admin\OrderController::class)->names('leads');   
+   
+    // Payment History 
+    Route::resource('/payment', App\Http\Controllers\Admin\PaymentController::class)->names('payment.index');   
+
     //appointment for lead
     Route::post('/request-appointment', [\App\Http\Controllers\Admin\OrderController::class,'storeAppointment']);
     

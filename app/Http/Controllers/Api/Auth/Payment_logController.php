@@ -19,7 +19,7 @@ class Payment_logController extends Controller
     public function payment(Request $request)
     {        
         $input = $request->all();        
-        $api = new Api(env('RAZOR_KEY'), env('RAZOR_SECRET'));
+        $api = new Api(env('rzp_test_NytLbUx4t56jfb'), env('TiwebK2DZG9MgLqiar5qzuDd'));
         $payment = $api->payment->fetch($input['payment_id']);
 
         if(count($input)  && !empty($input['payment_id'])) 
@@ -32,12 +32,12 @@ class Payment_logController extends Controller
             catch (\Exception $e) 
             {
                 return  $e->getMessage();
-                \Session::put('error',$e->getMessage());
+                Session::put('error',$e->getMessage());
                 return redirect()->back();
             }            
         }
         
-        \Session::put('success', 'Payment successful, your order will be  in the next 48 hours.');
+        Session::put('success', 'Payment successful.');
         return redirect()->back();
     }
 
